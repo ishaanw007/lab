@@ -8,7 +8,6 @@ import 'package:shopping_buyer_app/modules/screens/CartTotal.dart';
 import 'package:shopping_buyer_app/modules/widgets/CartProductsCard.dart';
 
 class CartScreen extends StatefulWidget {
-
   CartScreen({Key? key}) : super(key: key);
 
   @override
@@ -21,26 +20,23 @@ class _CartScreenState extends State<CartScreen> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   void initState() {
-    
     print("jsdjibhivbhibvj");
   }
 
-  
+  read() {
+    print("jsdjibhivbhibvj");
 
-  read() async {
     print("jsdjibhivbhibvj");
-    try {
-    print("jsdjibhivbhibvj");
-      QuerySnapshot querySnapshot =
-          await firestore.collection(Collections.CART).get(); //read all the products
-      // List<QueryDocumentSnapshot> list = querySnapshot.docs;
-      // List<Cart> cart =
-      //     list.map((QueryDocumentSnapshot doc) => Cart.fromJSON(doc)).toList();
-      print(querySnapshot.docs[0]["orderlist"].data());
-      // return cart;
-    } catch (err) {
-      print(err);
-    }
+    Stream<QuerySnapshot<Map<String, dynamic>>> querySnapshot = firestore
+        .collection(Collections.CART + "/123asdwqdasdasd/orderlist")
+        .snapshots(); //read all the products
+    return querySnapshot;
+    // List<QueryDocumentSnapshot> list = querySnapshot.docs;
+    // List<Cart> cart =
+    //     list.map((QueryDocumentSnapshot doc) => Cart.fromJSON(doc)).toList();
+    // final Map <String, dynamic> doc = querySnapshot.docs[0];
+    // print(querySnapshot.docs[0].data());
+    // return cart;
   }
 
   @override
@@ -57,16 +53,33 @@ class _CartScreenState extends State<CartScreen> {
               Container(
                 child: SizedBox(
                   height: 500,
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: controller.products.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return CartProductCard(
-                          controller: controller,
-                          product: controller.products.keys.toList()[index],
-                          quantity: controller.products.values.toList()[index],
-                          index: index,
-                        );
+                  child: StreamBuilder(
+                      stream: read(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Text("error occured");
+                        } else {
+                          print("dcsdcdccds");
+                          print(snapshot);
+                          return ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: controller.products.length,
+                              // itemCount: snapshot.data,
+
+                              itemBuilder: (BuildContext context, int index) {
+                                return CartProductCard(
+                                  controller: controller,
+                                  product:
+                                      controller.products.keys.toList()[index],
+                                  quantity: controller.products.values
+                                      .toList()[index],
+                                  index: index,
+                                );
+                              });
+                        }
                       }),
                 ),
               ),
