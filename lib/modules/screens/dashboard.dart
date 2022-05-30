@@ -31,7 +31,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                   const SizedBox(height:52),
 
-                  ElevatedButton(onPressed: () => Get.to(CartScreen()), child: Text("Go to Cart"))
+                  ElevatedButton(onPressed: () => Get.to(CartScreen2()), child: Text("Go to Cart"))
             ],
           )
               
